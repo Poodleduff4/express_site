@@ -1,10 +1,10 @@
 var router = require('express').Router();
 
 router.get('/', function(req, res) {
-    res.send('Users Index Page');
+    res.sendf;
 });
 
-router.get('/list', function(req, res) {
+router.get('/suggestions', function(req, res) {
     res.send('Users List Page');
     console.log('piss and shit');
 });

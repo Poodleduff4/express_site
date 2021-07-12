@@ -1,12 +1,11 @@
 var express = require('express');
 var app = express();
 
-app.use('/', require('./routes/index'));
-app.use('/users', require('./routes/users'))
+// app.use('/', require('./index'));
+app.use('/imdb/movies', require('./imdb/movies'));
 
-app.get('/users/list', function(req, res){
-    res.send('piss and shit');
-    console.log('piss and shit');
+app.get('/', function(req, res){
+    res.sendFile(__dirname + '/site.html');
 })
 
-app.listen('3000');
+app.listen('8080');

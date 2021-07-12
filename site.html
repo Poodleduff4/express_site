@@ -1,0 +1,66 @@
+
+<html>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<script src="https://unpkg.com/axios/dist/axios.min.js">
+  const axios = require('axios');
+</script>
+
+
+<body>
+<h1>Movie Database</h1>
+
+<p>Enter a movie to search.</p>
+
+
+<!-- <form onsubmit="searchTitle()">
+  <label for="mName">Movie name:</label>
+  <input type="text" id="mName" name="mName">
+  <input type="submit" value="Submit"><br><br>
+
+  <label for="dName">Director name:</label>
+  <input type="text" id="dName" name="dName">
+  <input type="submit" value="Submit"><br><br>
+</form>  -->
+<label for="nMovie">Movie</label>
+<input type="text" id="nMovie" onchange="searchTitle()"><br>
+<label for="nMovieSug">Suggestions</label>
+<input type="text" id="nMovieSug" onchange="getSuggestions()">
+
+<input type="button" onclick="getSuggestions()">
+
+  <label for="mDetails">Results:</label><br>
+  <textarea id="mDetails" name="mDetails" rows="20" cols="100"></textarea>
+
+  <script>
+      function searchTitle() {
+        let title = document.getElementById('nMovie').value
+        // localhost:8080/imdb/movies?title=+title"
+        // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
+        axios.get("https://www.omdbapi.com/?apikey=95b1aff&t=" + document.getElementById('nMovie').value).then(function (response) {
+        // handle success
+        console.log(response);
+        for(var key in response.data) {
+          var value = response.data[key];
+          document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
+        }
+        document.getElementById('mDetails').append('\n\n\n')
+      })
+      }
+
+
+      function getSuggestions() {
+        title = document.getElementById('nMovieSug').value;
+        console.log('piss');
+        axios.get("http://localhost:8080/imdb/movies/suggestions?t=" + title).then(function (response) {
+        console.log(response);
+      })
+      }
+  </script>
+
+</body>
+</html>
+
+GET   /imdb/movies?title=shrek
+GET   /imdb/tvshows?year=2021
+
+
