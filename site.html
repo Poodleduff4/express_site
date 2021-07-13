@@ -1,4 +1,3 @@
-
 <html>
 <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <script src="https://unpkg.com/axios/dist/axios.min.js">
@@ -7,12 +6,12 @@
 
 
 <body>
-<h1>Movie Database</h1>
+  <h1>Movie Database</h1>
 
-<p>Enter a movie to search.</p>
+  <p>Enter a movie to search.</p>
 
 
-<!-- <form onsubmit="searchTitle()">
+  <!-- <form onsubmit="searchTitle()">
   <label for="mName">Movie name:</label>
   <input type="text" id="mName" name="mName">
   <input type="submit" value="Submit"><br><br>
@@ -21,46 +20,90 @@
   <input type="text" id="dName" name="dName">
   <input type="submit" value="Submit"><br><br>
 </form>  -->
-<label for="nMovie">Movie</label>
-<input type="text" id="nMovie" onchange="searchTitle()"><br>
-<label for="nMovieSug">Suggestions</label>
-<input type="text" id="nMovieSug" onchange="getSuggestions()">
+  <label for="nMovie">Movie</label>
+  <input type="text" id="nMovie" onchange="searchTitle()">
 
-<input type="button" onclick="getSuggestions()">
+  <input type="button" onclick="searchTitle()" value="Submit"><br>
 
   <label for="mDetails">Results:</label><br>
   <textarea id="mDetails" name="mDetails" rows="20" cols="100"></textarea>
 
+  <div id="suggestions">
+  </div>
+
   <script>
-      function searchTitle() {
-        let title = document.getElementById('nMovie').value
-        // localhost:8080/imdb/movies?title=+title"
-        // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
-        axios.get("https://www.omdbapi.com/?apikey=95b1aff&t=" + document.getElementById('nMovie').value).then(function (response) {
+    function searchTitle() {
+      let title = document.getElementById('nMovie').value
+      // localhost:8080/imdb/movies?title=+title"
+      // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
+      axios.get("https://www.omdbapi.com/?apikey=95b1aff&t=" + document.getElementById('nMovie').value).then(function (response) {
         // handle success
         console.log(response);
-        for(var key in response.data) {
+        document.getElementById('mDetails').innerHTML = '';
+        for (var key in response.data) {
           var value = response.data[key];
           document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
         }
         document.getElementById('mDetails').append('\n\n\n')
       })
+      getSuggestions();
+    }
+
+
+    function getSuggestions() {
+      var title = String(document.getElementById('nMovie').value);
+      title = title.toLowerCase();
+      console.log('piss');
+      if (location.hostname === "localhost" || location.hostname === "127.0.0.1"){
+        var url = "http://localhost:8080/imdb/movies/suggestions?t=" + title
       }
-
-
-      function getSuggestions() {
-        title = document.getElementById('nMovieSug').value;
-        console.log('piss');
-        axios.get("http://localhost:8080/imdb/movies/suggestions?t=" + title).then(function (response) {
+      else{
+        url = "http://184.146.136.208:8080/imdb/movies/suggestions?t=" + title
+      }
+      axios.get(url).then(function (response) {
         console.log(response);
+        var data = response.data;
+        var container = document.getElementById('suggestions');
+        console.log('before ' + container.childNodes.length);
+        // for (let i = 0; i < container.childNodes.length; i++) {
+        //   console.log(container.childNodes[i].innerHTML);
+        // }
+        while (container.firstChild != null) {
+          container.removeChild(container.firstChild);
+        }
+        console.log('after ' + container.childNodes.length);
+        for (let i = 0; i < data.length; i++) {
+          const label = document.createElement('label');
+          label.id = 'sug_' + i;
+          label.innerHTML = String(data[i]);
+          label.addEventListener("click", function () {
+            searchSuggestion(label.id);
+          });
+          let br = document.createElement('br');
+          container.appendChild(label);
+          container.appendChild(br);
+        }
       })
-      }
+    }
+
+    function searchSuggestion(id) {
+      let choice = document.getElementById(id).innerHTML;
+      // localhost:8080/imdb/movies?title=+title"
+      // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
+      axios.get("https://www.omdbapi.com/?apikey=95b1aff&t=" + choice).then(function (response) {
+        // handle success
+        console.log(response);
+        document.getElementById('mDetails').innerHTML = '';
+        for (var key in response.data) {
+          var value = response.data[key];
+          document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
+        }
+        document.getElementById('mDetails').append('\n\n\n')
+      })
+    }
+
   </script>
 
 </body>
+
 </html>
-
-GET   /imdb/movies?title=shrek
-GET   /imdb/tvshows?year=2021
-
-
