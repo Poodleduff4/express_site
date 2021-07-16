@@ -14,7 +14,7 @@ router.get('/suggestions', function (req, res) {
     var host = 'v2.sg.media-imdb.com'
     var filename = '/suggestion/' + movieTitle[0] + '/' + movieTitle + '.json';
     var url = 'https://' + host + filename;
-    console.log(url);
+    // console.log(url);
     const suggestions = [];
     https.get(url, function (response) {
 
@@ -29,16 +29,26 @@ router.get('/suggestions', function (req, res) {
 
 
                 for (var key in temp['d']) {
+                    let movieTemp = [];
+                    // console.log('key: ' + key)
                     for (var key2 in temp['d'][key]) {
                         // console.log(key + '/' + key2 + ': ' + temp['d'][key][key2]);
 
                     }
-                    // let tempTitle = temp['d'][key]['l'];
-                    suggestions.push(temp['d'][key]['l']);
-                    // console.log(suggestions);
-                    // console.log(temp['d'][key]['l']);
-                    // console.log('\n');
+                    for (var key3 in temp['d'][key]['i']) {
 
+                    }
+
+                    movieTemp.push(temp['d'][key]['l']); //Title
+                    movieTemp.push(temp['d'][key]['id']) //id
+                    try {
+                        movieTemp.push(temp['d'][key]['i']['imageUrl']); //image link
+                    }
+                    catch {
+                        movieTemp.push(null);
+                    }
+
+                    suggestions.push(movieTemp);
                 }
                 // console.log(suggestions);
                 res.send(suggestions);
