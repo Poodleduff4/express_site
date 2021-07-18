@@ -1,25 +1,18 @@
+<!DOCTYPE html>
 <html>
-<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 <script src="https://unpkg.com/axios/dist/axios.min.js">
   const axios = require('axios');
 </script>
 
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
 
 <body>
   <h1>Movie Database</h1>
 
   <p>Enter a movie to search.</p>
 
-
-  <!-- <form onsubmit="searchTitle()">
-  <label for="mName">Movie name:</label>
-  <input type="text" id="mName" name="mName">
-  <input type="submit" value="Submit"><br><br>
-
-  <label for="dName">Director name:</label>
-  <input type="text" id="dName" name="dName">
-  <input type="submit" value="Submit"><br><br>
-</form>  -->
   <label for="nMovie">Movie</label>
   <input type="text" id="nMovie" onchange="searchTitle()">
 
