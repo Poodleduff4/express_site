@@ -12,3 +12,14 @@ h1{
     background-color: #ab1a23;
     border-radius: 10px;
 }
+
+h2 {
+    display: inline-block;
+}
+#searchSection {
+    padding-left: 350px;
+}
+
+#voteSection {
+    padding-left: 900px;
+}

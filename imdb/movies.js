@@ -61,4 +61,12 @@ router.get('/suggestions', function (req, res) {
 
 });
 
+
+
+router.get('/vote', function(req, res){
+    movieTitle = req.query.t;
+    movieId = req.query.i;
+    res.sendFile(__dirname + '/vote.html');
+});
+
 module.exports = router;

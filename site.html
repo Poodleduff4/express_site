@@ -10,14 +10,16 @@
 
 <body>
   <h1>Movie Database</h1>
+  <h2 id="searchSection">Search</h2>
+  <h2 id="voteSection">Vote</h2>
 
   <p>Enter a movie to search.</p>
 
   <label for="nMovie">Movie</label>
   <input type="text" id="nMovie" onchange="searchTitle()">
 
-  <input type="button" onclick="searchTitle()" value="Submit"><br>
-
+  <input type="button" onclick="searchTitle()" value="Submit">
+  <input type="button" onclick="vote()" value="Vote"><br>
   <label for="mDetails">Results:</label><br>
   <textarea id="mDetails" name="mDetails" rows="20" cols="100"></textarea>
 
@@ -25,6 +27,7 @@
   </div>
 
   <script>
+    var currentMovieId = "";
     function searchTitle() {
       let title = document.getElementById('nMovie').value
       // localhost:8080/imdb/movies?title=+title"
@@ -36,6 +39,10 @@
         document.getElementById('mDetails').innerHTML = '';
         for (var key in response.data) {
           var value = response.data[key];
+          if (key == "imdbID"){
+            console.log('key added');
+            currentMovieId = value;
+          }
           document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
         }
         document.getElementById('mDetails').append('\n\n\n')
@@ -96,6 +103,7 @@
       // let choice = document.getElementById(id).innerHTML;
       // localhost:8080/imdb/movies?title=+title"
       // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
+        currentMovieId = id;
       axios.get("https://www.omdbapi.com/?apikey=95b1aff&i=" + id).then(function (response) {
         // handle success
         console.log(response);
@@ -108,6 +116,10 @@
       })
       topFunction();
 
+    }
+
+    function vote() {
+      console.log('vote added for id: ' + currentMovieId);
     }
 
     function topFunction() {
