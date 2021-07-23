@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html>
-<script src="https://unpkg.com/axios/dist/axios.min.js">
+<script src="https://unpkg.com/axios/dist/axios.min.js"
   const axios = require('axios');
+>
+  
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <head>
   <link rel="stylesheet" href="styles.css">
@@ -10,8 +13,19 @@
 
 <body>
   <h1>Movie Database</h1>
-  <h2 id="searchSection">Search</h2>
-  <h2 id="voteSection">Vote</h2>
+
+  <nav>
+    <ul>
+      <li><strong>Home</strong></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="clients.html">Our Clients</a></li>
+      <li><a href="products.html">Our Products</a></li>
+      <li><a href="services.html">Our Services</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+  </nav>
+
+  <!-- <h2 id="searchSection">Search</h2> -->
 
   <p>Enter a movie to search.</p>
 
@@ -24,9 +38,11 @@
   <textarea id="mDetails" name="mDetails" rows="20" cols="100"></textarea>
 
   <div id="suggestions">
+
   </div>
 
   <script>
+    // $('#mDetails').replaceWith('piss');
     var currentMovieId = "";
     function searchTitle() {
       let title = document.getElementById('nMovie').value
