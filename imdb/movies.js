@@ -1,12 +1,23 @@
 var router = require('express').Router();
-var axios = require('axios');
+var axios = require('axios').default;
 const { Console } = require('console');
 const { CONNREFUSED } = require('dns');
-var https = require('https')
+var https = require('https');
+var fs = require('fs');
 
 router.get('/', function (req, res) {
     movieTitle = req.query.t;
     res.send(movieTitle);
+});
+
+router.get('/info', function (req, res) {
+    var movieId = req.query.i;
+    var requestData = req.query.d;
+    url = "https://www.omdbapi.com/?apikey=95b1aff&i=" + movieId;
+    axios.get(url).then(function (response) {
+        // console.log(response.data[requestData]);
+        res.send(response.data[requestData]);
+    })
 });
 
 router.get('/suggestions', function (req, res) {
@@ -61,12 +72,33 @@ router.get('/suggestions', function (req, res) {
 
 });
 
+router.get('/vote', function (req, res) { // vote request for movie with id movieId
+    var movieId = req.query.i;
+    axios.get(`http://localhost:8080/imdb/movies/info?i=${movieId}&d=Title`).then(function (response) {
+        var movieTitle = response.data;
+        movieTitle = String(movieTitle).toLowerCase();
+    })
+    console.log(movieTitle);
+    var name = 'movieVotes.json';
+    var m = JSON.parse(fs.readFileSync(name));
+    console.log(m[movieId]);
 
-
-router.get('/vote', function(req, res){
-    movieTitle = req.query.t;
-    movieId = req.query.i;
-    res.sendFile(__dirname + '/vote.html');
+    for (var key in m) {
+        // console.log(key + ': ' + m[key]['title']);
+    }
+    if (m[movieId] == undefined) {
+        m[movieId] = {
+            title: movieTitle,
+            votes: 1
+        };
+        console.log('create');
+    }
+    else {
+        m[movieId]['votes'] += 1;
+        console.log('add');
+    }
+    fs.writeFileSync(name, JSON.stringify(m));
+    res.send('piss and shit');
 });
 
 module.exports = router;

@@ -14,11 +14,11 @@
 <body>
   <h1>Movie Database</h1>
 
-  <nav>
+  <nav id="navigation">
     <ul>
       <li><strong>Home</strong></li>
-      <li><a href="about.html">About Us</a></li>
-      <li><a href="clients.html">Our Clients</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="vote.html">Votes</a></li>
       <li><a href="products.html">Our Products</a></li>
       <li><a href="services.html">Our Services</a></li>
       <li><a href="contact.html">Contact Us</a></li>
@@ -44,6 +44,7 @@
   <script>
     // $('#mDetails').replaceWith('piss');
     var currentMovieId = "";
+    
     function searchTitle() {
       let title = document.getElementById('nMovie').value
       // localhost:8080/imdb/movies?title=+title"
@@ -51,12 +52,12 @@
       axios.get("https://www.omdbapi.com/?apikey=95b1aff&t=" + document.getElementById('nMovie').value).then(function (
         response) {
         // handle success
-        console.log(response);
+        // console.log(response);
         document.getElementById('mDetails').innerHTML = '';
         for (var key in response.data) {
           var value = response.data[key];
           if (key == "imdbID"){
-            console.log('key added');
+            // console.log('key added');
             currentMovieId = value;
           }
           document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
@@ -70,14 +71,14 @@
     function getSuggestions() {
       var title = String(document.getElementById('nMovie').value);
       title = title.toLowerCase();
-      console.log('piss');
+      // console.log('piss');
       if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
         var url = "http://localhost:8080/imdb/movies/suggestions?t=" + title
       } else {
         url = "http://184.146.136.208:8080/imdb/movies/suggestions?t=" + title
       }
       axios.get(url).then(function (response) {
-        console.log(response);
+        // console.log(response);
         var data = response.data;
         var container = document.getElementById('suggestions');
         // console.log('before ' + container.childNodes.length);
@@ -91,7 +92,7 @@
         for (let i = 0; i < data.length; i++) {
           const label = document.createElement('label');
           // label.id = 'sug_' + i;
-          console.log('id: ' + data[i][1]);
+          // console.log('id: ' + data[i][1]);
           label.id = data[i][1];
           label.innerHTML = String(data[i][0]);
           label.addEventListener("click", function () {
@@ -122,7 +123,7 @@
         currentMovieId = id;
       axios.get("https://www.omdbapi.com/?apikey=95b1aff&i=" + id).then(function (response) {
         // handle success
-        console.log(response);
+        // console.log(response);
         document.getElementById('mDetails').innerHTML = '';
         for (var key in response.data) {
           var value = response.data[key];
@@ -136,10 +137,12 @@
 
     function vote() {
       console.log('vote added for id: ' + currentMovieId);
+      axios.get("http://localhost:8080/imdb/movies/vote?i=" + currentMovieId).then(function (response) {
+        console.log(response);
+      });
     }
 
     function topFunction() {
-      console.log('top');
       document.body.scrollTop = 0; // For Safari
       document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     }
