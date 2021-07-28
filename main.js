@@ -6,6 +6,7 @@ app.use('/imdb/movies', require('./imdb/movies'));
 app.use(express.static("public"));
 
 app.get('/', function(req, res){
+    console.log('main');
     res.sendFile(__dirname + '/site.html');
 })
 

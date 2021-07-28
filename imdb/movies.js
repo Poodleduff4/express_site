@@ -101,4 +101,10 @@ router.get('/vote', function (req, res) { // vote request for movie with id movi
     res.send('piss and shit');
 });
 
+router.get('/getVotes', function(req, res){
+    var name = 'movieVotes.json';
+    var data = fs.readFileSync(name);
+    res.send(data);
+});
+
 module.exports = router;
