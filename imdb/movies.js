@@ -1,5 +1,6 @@
 var router = require('express').Router();
 var axios = require('axios').default;
+
 const { Console } = require('console');
 const { CONNREFUSED } = require('dns');
 var https = require('https');
@@ -22,9 +23,9 @@ router.get('/info', function (req, res) {
 
 router.get('/suggestions', function (req, res) {
     movieTitle = req.query.t;
-    var host = 'v2.sg.media-imdb.com'
-    var filename = '/suggestion/' + movieTitle[0] + '/' + movieTitle + '.json';
-    var url = 'https://' + host + filename;
+    var host = 'https://v3.sg.media-imdb.com'
+    var filename = '/suggestion/x/' + movieTitle + '.json?includeVideos=1';
+    var url = host + filename;
     // console.log(url);
     const suggestions = [];
     https.get(url, function (response) {
@@ -37,6 +38,7 @@ router.get('/suggestions', function (req, res) {
             //   }
             try {
                 let temp = JSON.parse(d);
+                console.log(temp)
 
 
                 for (var key in temp['d']) {
@@ -70,41 +72,6 @@ router.get('/suggestions', function (req, res) {
     });
     // console.log(suggestions);
 
-});
-
-router.get('/vote', function (req, res) { // vote request for movie with id movieId
-    var movieId = req.query.i;
-    axios.get(`http://localhost:8080/imdb/movies/info?i=${movieId}&d=Title`).then(function (response) {
-        var movieTitle = response.data;
-        movieTitle = String(movieTitle).toLowerCase();
-    })
-    console.log(movieTitle);
-    var name = 'movieVotes.json';
-    var m = JSON.parse(fs.readFileSync(name));
-    console.log(m[movieId]);
-
-    for (var key in m) {
-        // console.log(key + ': ' + m[key]['title']);
-    }
-    if (m[movieId] == undefined) {
-        m[movieId] = {
-            title: movieTitle,
-            votes: 1
-        };
-        console.log('create');
-    }
-    else {
-        m[movieId]['votes'] += 1;
-        console.log('add');
-    }
-    fs.writeFileSync(name, JSON.stringify(m));
-    res.send('piss and shit');
-});
-
-router.get('/getVotes', function(req, res){
-    var name = 'movieVotes.json';
-    var data = fs.readFileSync(name);
-    res.send(data);
 });
 
 module.exports = router;

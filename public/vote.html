@@ -19,8 +19,9 @@
     </ul>
   </nav>
 
-  <form id="movieOptions" action="">
+  <form id="movieOptions" action="submitVote()">
     <input type="submit" value="submit">
+    <br>
   </form>
 
 <label id="log"></label>
@@ -32,7 +33,7 @@
       console.log('piss');
       var name = 'movieVotes.json';
       var m = {};
-      axios.get("http://localhost:8080/imdb/movies/getVotes").then(function (response) {
+      axios.get("http://localhost:8080/imdb/vote/getVotes").then(function (response) {
         // console.log(response.data);
         m = response.data;
         // console.log(m['tt1375666']);

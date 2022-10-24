@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
-<script src="https://unpkg.com/axios/dist/axios.min.js"
-  const axios = require('axios');
->
-  
+<script src="https://unpkg.com/axios/dist/axios.min.js" const axios=require('axios');>
+
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <head>
   <link rel="stylesheet" href="styles.css">
-  
+
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -35,11 +33,13 @@
   <p>Enter a movie to search.</p>
 
   <label for="nMovie">Movie</label>
-  <input type="text" id="nMovie" onchange="searchTitle()">
+  <input type="text" id="nMovie" oninput="getSuggestions()">
 
   <input type="button" onclick="searchTitle()" value="Submit">
   <input type="button" onclick="vote()" value="Vote"><br>
+  <table id="suggestionsPanel"></table>
   <label for="mDetails">Results:</label><br>
+  <img id="selectedMoviePoster">
   <textarea id="mDetails" name="mDetails" rows="20" cols="100"></textarea>
 
   <div id="suggestions">
@@ -49,8 +49,9 @@
   <script>
     // $('#mDetails').replaceWith('piss');
     var currentMovieId = "";
-    
+
     function searchTitle() {
+      console.log('onchange')
       let title = document.getElementById('nMovie').value
       // localhost:8080/imdb/movies?title=+title"
       // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
@@ -61,9 +62,13 @@
         document.getElementById('mDetails').innerHTML = '';
         for (var key in response.data) {
           var value = response.data[key];
-          if (key == "imdbID"){
+          if (key == "imdbID") {
             // console.log('key added');
             currentMovieId = value;
+          }
+          if (key == "Poster") {
+            document.getElementById('selectedMoviePoster').src = value;
+            console.log('ayooooo')
           }
           document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
         }
@@ -75,6 +80,10 @@
 
     function getSuggestions() {
       var title = String(document.getElementById('nMovie').value);
+      if(title == ''){
+        document.getElementById('suggestionsPanel').innerHTML = "";
+        console.log("Empty");
+      }
       title = title.toLowerCase();
       // console.log('piss');
       if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
@@ -85,38 +94,35 @@
       axios.get(url).then(function (response) {
         // console.log(response);
         var data = response.data;
-        var container = document.getElementById('suggestions');
+        var table = document.getElementById('suggestionsPanel')
+        table.innerHTML = "";
         // console.log('before ' + container.childNodes.length);
         // for (let i = 0; i < container.childNodes.length; i++) {
         //   console.log(container.childNodes[i].innerHTML);
         // }
-        while (container.firstChild != null) {
-          container.removeChild(container.firstChild);
-        }
         // console.log('after ' + container.childNodes.length);
         for (let i = 0; i < data.length; i++) {
-          const label = document.createElement('label');
-          // label.id = 'sug_' + i;
-          // console.log('id: ' + data[i][1]);
-          label.id = data[i][1];
-          label.innerHTML = String(data[i][0]);
-          label.addEventListener("click", function () {
-            searchSuggestion(label.id);
+          let row = table.insertRow(-1);
+          let cell1 = row.insertCell(-1);
+          let cell2 = row.insertCell(-1);
+          let movieName = document.createElement('label');
+          movieName.id = String(data[i][1]);
+          movieName.innerHTML = String(data[i][0]);
+          movieName.style.maxInlineSize = "100px";
+          movieName.style.display = "inline-block";
+          movieName.addEventListener("click", function () {
+            searchSuggestion(movieName.id);
           });
-          let br = document.createElement('br');
-          let image = document.createElement('img');
-          image.src = data[i][2];
-          image.id = data[i][1];
-          image.alt = 'No image';
-          image.style = "width:200px;height:300px;"
-          image.addEventListener("click", function () {
-            searchSuggestion(image.id);
+          let poster = document.createElement('img');
+          poster.src = String(data[i][2]);
+          poster.id = String(data[i][1]);
+          poster.alt = 'No image';
+          poster.style = "width:50px;height:70px;"
+          poster.addEventListener("click", function () {
+            searchSuggestion(poster.id);
           })
-          container.appendChild(label);
-          container.appendChild(br);
-          container.appendChild(image)
-          container.appendChild(document.createElement('br'))
-          container.appendChild(document.createElement('br'))
+          cell1.append(movieName);
+          cell2.append(poster);
         }
       })
     }
@@ -125,18 +131,27 @@
       // let choice = document.getElementById(id).innerHTML;
       // localhost:8080/imdb/movies?title=+title"
       // axios.get("http://localhost:8080/imdb/movies?t=" + title).then(function (response) {
-        currentMovieId = id;
+      currentMovieId = id;
       axios.get("https://www.omdbapi.com/?apikey=95b1aff&i=" + id).then(function (response) {
         // handle success
         // console.log(response);
         document.getElementById('mDetails').innerHTML = '';
         for (var key in response.data) {
           var value = response.data[key];
+          if (key == "imdbID") {
+            // console.log('key added');
+            currentMovieId = value;
+          }
+          if (key == "Poster") {
+            document.getElementById('selectedMoviePoster').src = value;
+            console.log('ayooooo')
+          }
           document.getElementById('mDetails').append(key + ': ' + String(value) + '\n');
         }
         document.getElementById('mDetails').append('\n\n\n')
       })
-      topFunction();
+      // topFunction();
+      document.getElementById('suggestionsPanel').innerHTML = '';
 
     }
 
